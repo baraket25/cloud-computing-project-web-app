@@ -1,30 +1,36 @@
 // src/app.js
-require("dotenv").config(); // For local dev; not needed in Azure
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
+const expressLayouts = require("express-ejs-layouts");
 const routes = require("./routes");
-
+ 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Middleware
+ 
+// Body parsing for forms
 app.use(express.urlencoded({ extended: true }));
-
-// View engine
+ 
+// View engine setup
 app.set("views", path.join(__dirname, "..", "views"));
 app.set("view engine", "ejs");
-
-// Static files (if you add CSS later)
+ 
+// Use express-ejs-layouts
+app.use(expressLayouts);
+app.set("layout", "layout"); // this will look for views/layout.ejs
+ 
+// Static files (if any)
 app.use(express.static(path.join(__dirname, "..", "public")));
-
+ 
 // Routes
 app.use("/", routes);
-
-// Basic health check
+ 
+// Health check
 app.get("/health", (req, res) => {
   res.send("OK");
 });
-
+ 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
+ 
